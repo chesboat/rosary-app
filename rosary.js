@@ -6,7 +6,7 @@ const app = new Vue({
         isDarkMode: false,
         currentBead: null,
         currentMysterySet: null,
-        activeTab: 'prayers', // For mobile navigation
+        activeTab: 'beads', // For mobile navigation
         touchStartX: 0,
         touchStartY: 0,
         prayers: {

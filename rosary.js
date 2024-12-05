@@ -236,6 +236,11 @@ const app = new Vue({
         }
     },
     methods: {
+        toggleDarkMode() {
+            this.isDarkMode = !this.isDarkMode;
+            document.documentElement.classList.toggle('dark', this.isDarkMode);
+            localStorage.setItem('darkMode', this.isDarkMode);
+        },
         selectMysterySet(set) {
             this.currentMysterySet = set;
             if (window.innerWidth <= 768) {
@@ -358,8 +363,17 @@ const app = new Vue({
         }
     },
     mounted() {
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            this.isDarkMode = true;
+        // Check for saved dark mode preference
+        const savedDarkMode = localStorage.getItem('darkMode');
+        if (savedDarkMode !== null) {
+            this.isDarkMode = savedDarkMode === 'true';
+            document.documentElement.classList.toggle('dark', this.isDarkMode);
+        } else {
+            // Check system preference
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                this.isDarkMode = true;
+                document.documentElement.classList.add('dark');
+            }
         }
 
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {

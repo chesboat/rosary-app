@@ -38,7 +38,7 @@ const app = new Vue({
             salveRegina: {
                 title: "Salve Regina",
                 latin: "Salve, Regina, Mater misericordiæ, vita, dulcedo, et spes nostra, salve. Ad te clamamus exsules filii Hevæ, Ad te suspiramus, gementes et flentes in hac lacrimarum valle. Eia, ergo, advocata nostra, illos tuos misericordes oculos ad nos converte; Et Iesum, benedictum fructum ventris tui, nobis post hoc exsilium ostende. O clemens, O pia, O dulcis Virgo Maria.",
-                english: "Hail, Holy Queen, Mother of Mercy, our life, our sweetness and our hope. To thee do we cry, poor banished children of Eve; To thee do we send up our sighs, mourning and weeping in this valley of tears. Turn then, most gracious advocate, thine eyes of mercy toward us; And after this our exile, show unto us the blessed fruit of thy womb, Jesus. O clement, O loving, O sweet Virgin Mary."
+                english: "Hail, Holy Queen, Mother of Mercy, our life, our sweetness and our hope! To thee do we cry, poor banished children of Eve. To thee do we send up our sighs, mourning and weeping in this valley of tears. Turn, then, most gracious advocate, thine eyes of mercy toward us, and after this our exile, show unto us the blessed fruit of thy womb, Jesus. O clement, O loving, O sweet Virgin Mary."
             }
         },
         mysterySets: [
@@ -201,6 +201,12 @@ const app = new Vue({
                 return this.prayers.hailMary;
             }
 
+            // For Salve Regina
+            if (this.currentBead === 'salve-regina') {
+                console.log('Matched Salve Regina');
+                return this.prayers.salveRegina;
+            }
+
             return null;
         },
         showGloryBe() {
@@ -268,15 +274,14 @@ const app = new Vue({
 
             if (Math.abs(xDiff) > Math.abs(yDiff) && Math.abs(xDiff) > 10) {
                 event.preventDefault(); 
-                if (xDiff > 0 && this.activeTab === 'beads') {
-                    this.activeTab = 'prayers';
-                } else if (xDiff < 0 && this.activeTab === 'prayers') {
-                    this.activeTab = 'beads';
+                if (xDiff > 0 && this.activeTab === 'prayers') {  
+                    this.activeTab = 'beads';  
+                } else if (xDiff < 0 && this.activeTab === 'beads') {  
+                    this.activeTab = 'prayers';  
                 }
+                this.touchStartX = null;
+                this.touchStartY = null;
             }
-
-            this.touchStartX = null;
-            this.touchStartY = null;
         },
         handleTouchEnd() {
             this.touchStartX = null;

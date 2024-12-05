@@ -29,31 +29,55 @@
         .bead:hover {
             transform: scale(1.1);
         }
-        /* Dark mode styles */
+        /* Tokyo Night Dark Mode */
         .dark body {
-            background-color: #1a1a1a;
-            color: #e5e5e5;
+            background-color: #1a1b26;
+            color: #a9b1d6;
         }
         .dark .bg-white {
-            background-color: #2d2d2d !important;
+            background-color: #24283b !important;
         }
         .dark .text-gray-800 {
-            color: #e5e5e5 !important;
+            color: #c0caf5 !important;
         }
         .dark .text-gray-700 {
-            color: #d1d1d1 !important;
+            color: #a9b1d6 !important;
         }
         .dark .text-gray-600 {
-            color: #b0b0b0 !important;
+            color: #9aa5ce !important;
         }
         .dark .bg-gray-50 {
-            background-color: #1a1a1a !important;
+            background-color: #1a1b26 !important;
+        }
+        .dark .bg-gray-100 {
+            background-color: #24283b !important;
         }
         .dark .border-gray-300 {
-            border-color: #404040 !important;
+            border-color: #414868 !important;
         }
         .dark .shadow-sm {
-            box-shadow: 0 1px 2px rgba(255, 255, 255, 0.05) !important;
+            box-shadow: 0 1px 2px rgba(192, 202, 245, 0.05) !important;
+        }
+        .dark .bg-yellow-600 {
+            background-color: #7aa2f7 !important;
+        }
+        .dark .bg-yellow-500 {
+            background-color: #89b4fa !important;
+        }
+        .dark .text-yellow-100 {
+            color: #c0caf5 !important;
+        }
+        .dark .text-yellow-200 {
+            color: #c0caf5 !important;
+        }
+        .dark .bg-yellow-500 {
+            background-color: #7aa2f7 !important;
+        }
+        .dark .ring-blue-500 {
+            --tw-ring-color: #bb9af7 !important;
+        }
+        .dark .hover\:bg-gray-700:hover {
+            background-color: #414868 !important;
         }
         .prayer-container {
             height: calc(100vh - 4rem); /* Subtract header height */
@@ -276,6 +300,16 @@
                                              :class="['bead w-4 h-4 bg-white border-2 border-gray-300 rounded-full dark:bg-gray-700 dark:border-gray-500',
                                                      currentBead === 'decade-' + decade + '-ave-' + ave ? 'ring-4 ring-blue-500' : '']">
                                         </div>
+                                    </div>
+                                </div>
+                                <!-- Salve Regina Bead -->
+                                <div class="mt-8 flex flex-col items-center">
+                                    <div @click="selectBead('salve-regina')"
+                                        :class="['bead w-8 h-8 bg-purple-500 dark:bg-purple-400 rounded-full transition-all hover:scale-110',
+                                                currentBead === 'salve-regina' ? 'ring-4 ring-blue-500' : '']">
+                                    </div>
+                                    <div class="text-center text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                        Salve Regina
                                     </div>
                                 </div>
                             </div>

@@ -359,23 +359,28 @@ const app = new Vue({
         }
     },
     mounted() {
-        // Add keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' || e.key === 'Space') {
-                this.nextBead();
-            } else if (e.key === 'ArrowLeft') {
-                this.previousBead();
-            }
-        });
-
-        // Check for system dark mode preference
+        // Check for dark mode preference
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
             this.isDarkMode = true;
         }
 
-        // Watch for system dark mode changes
+        // Set up dark mode listener
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
             this.isDarkMode = e.matches;
+        });
+
+        // Force beads tab on mobile
+        if (window.innerWidth <= 768) {
+            this.activeTab = 'beads';
+        }
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                this.nextBead();
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                this.previousBead();
+            }
         });
     }
 });

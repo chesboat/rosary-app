@@ -168,13 +168,34 @@ const app = new Vue({
         currentPrayer() {
             if (!this.currentBead) return null;
 
+            // For debugging
+            console.log('Current Bead:', this.currentBead);
+
+            // For the crucifix
             if (this.currentBead === 'crucifix') {
                 return this.prayers.crucifix;
-            } else if (this.currentBead === 'initialOurFather' || this.currentBead.endsWith('OurFather')) {
+            }
+
+            // For the initial Our Father
+            if (this.currentBead === 'initial-our-father') {
                 return this.prayers.ourFather;
-            } else if (this.currentBead.startsWith('initialHailMary') || this.currentBead.startsWith('decade')) {
+            }
+
+            // For the initial three Hail Marys
+            if (this.currentBead.startsWith('initial-ave-')) {
                 return this.prayers.hailMary;
             }
+
+            // For decade Our Fathers
+            if (this.currentBead.includes('-our-father')) {
+                return this.prayers.ourFather;
+            }
+
+            // For decade Hail Marys
+            if (this.currentBead.includes('-ave-')) {
+                return this.prayers.hailMary;
+            }
+
             return null;
         },
         showGloryBe() {
@@ -217,6 +238,7 @@ const app = new Vue({
             }
         },
         selectBead(beadId) {
+            console.log('Bead selected:', beadId); // Debug log
             this.currentBead = beadId;
             if (window.innerWidth <= 768) {
                 this.activeTab = 'prayers';

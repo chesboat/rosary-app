@@ -189,7 +189,13 @@ const app = new Vue({
         },
         showSalveRegina() {
             // Show only on the last bead of the entire mystery (5th decade, 10th Ave Maria)
-            return this.currentBead === 'decade-5-ave-10';
+            const match = this.currentBead && this.currentBead.match(/decade-(\d+)-ave-(\d+)/);
+            if (match) {
+                const decade = parseInt(match[1]);
+                const ave = parseInt(match[2]);
+                return decade === 5 && ave === 10;
+            }
+            return false;
         },
         currentMystery() {
             if (!this.currentMysterySet || !this.currentBead) return null;

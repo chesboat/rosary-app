@@ -188,8 +188,8 @@ const app = new Vue({
                    this.currentBead.endsWith('10');
         },
         showSalveRegina() {
-            // Show only on the last bead of the entire mystery (5th decade, 10th bead)
-            return this.currentBead === 'decade-5-HailMary10';
+            // Show only on the last bead of the entire mystery (5th decade, 10th Ave Maria)
+            return this.currentBead === 'decade-5-ave-10';
         },
         currentMystery() {
             if (!this.currentMysterySet || !this.currentBead) return null;

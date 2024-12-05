@@ -170,6 +170,7 @@ const app = new Vue({
 
             // For debugging
             console.log('Current Bead:', this.currentBead);
+            console.log('Prayers Object:', this.prayers);
 
             // For the crucifix
             if (this.currentBead === 'crucifix') {
@@ -178,21 +179,25 @@ const app = new Vue({
 
             // For the initial Our Father
             if (this.currentBead === 'initial-our-father') {
+                console.log('Matched initial Our Father');
                 return this.prayers.ourFather;
             }
 
             // For the initial three Hail Marys
             if (this.currentBead.startsWith('initial-ave-')) {
+                console.log('Matched initial Hail Mary');
                 return this.prayers.hailMary;
             }
 
             // For decade Our Fathers
             if (this.currentBead.includes('-our-father')) {
+                console.log('Matched decade Our Father');
                 return this.prayers.ourFather;
             }
 
             // For decade Hail Marys
             if (this.currentBead.includes('-ave-')) {
+                console.log('Matched decade Hail Mary');
                 return this.prayers.hailMary;
             }
 

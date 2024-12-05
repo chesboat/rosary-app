@@ -22,8 +22,8 @@ const app = new Vue({
             },
             hailMary: {
                 title: "Hail Mary",
-                latin: "Ave Maria, gratia plena, Dominus tecum. Benedicta tu in mulieribus, et benedictus fructus ventris tui, Iesus. Sancta Maria, Mater Dei, ora pro nobis peccatoribus, nunc, et in hora mortis nostrae. Amen.",
-                english: "Hail Mary, full of grace, the Lord is with thee; blessed art thou among women, and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners now and at the hour of our death. Amen."
+                latin: "Ave Maria, gratia plena, Dominus tecum. Benedicta tu in mulieribus, et benedictus fructus ventris tui, Iesus. Sancta Maria, Mater Dei, ora pro nobis peccatoribus, nunc et in hora mortis nostrae. Amen.",
+                english: "Hail Mary, full of grace, the Lord is with thee; blessed art thou among women, and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners, now and at the hour of our death. Amen."
             },
             gloryBe: {
                 title: "Glory Be",
@@ -33,7 +33,12 @@ const app = new Vue({
             fatima: {
                 title: "Fatima Prayer",
                 latin: "O mi Iesu, dimitte nobis debita nostra, libera nos ab igne inferni, conduc in caelum omnes animas, praesertim illas quae maxime indigent misericordia tua.",
-                english: "O my Jesus, forgive us our sins, save us from the fires of hell, lead all souls to Heaven, especially those in most need of Thy mercy."
+                english: "O my Jesus, forgive us our sins, save us from the fires of hell, lead all souls to Heaven, especially those most in need of Thy mercy."
+            },
+            salveRegina: {
+                title: "Salve Regina",
+                latin: "Salve, Regina, Mater misericordiæ, vita, dulcedo, et spes nostra, salve. Ad te clamamus exsules filii Hevæ, Ad te suspiramus, gementes et flentes in hac lacrimarum valle. Eia, ergo, advocata nostra, illos tuos misericordes oculos ad nos converte; Et Iesum, benedictum fructum ventris tui, nobis post hoc exsilium ostende. O clemens, O pia, O dulcis Virgo Maria.",
+                english: "Hail, Holy Queen, Mother of Mercy, our life, our sweetness and our hope. To thee do we cry, poor banished children of Eve; To thee do we send up our sighs, mourning and weeping in this valley of tears. Turn then, most gracious advocate, thine eyes of mercy toward us; And after this our exile, show unto us the blessed fruit of thy womb, Jesus. O clement, O loving, O sweet Virgin Mary."
             }
         },
         mysterySets: [
@@ -162,57 +167,29 @@ const app = new Vue({
     computed: {
         currentPrayer() {
             if (!this.currentBead) return null;
-            
-            // For the crucifix
-            if (this.currentBead === 'crucifix') return this.prayers.crucifix;
-            
-            // For decade beads
-            if (this.currentBead.includes('-ave-')) {
+
+            if (this.currentBead === 'crucifix') {
+                return this.prayers.crucifix;
+            } else if (this.currentBead === 'initialOurFather' || this.currentBead.endsWith('OurFather')) {
+                return this.prayers.ourFather;
+            } else if (this.currentBead.startsWith('initialHailMary') || this.currentBead.startsWith('decade')) {
                 return this.prayers.hailMary;
             }
-            
-            // For Our Father beads
-            if (this.currentBead.includes('-our-father')) {
-                return this.prayers.ourFather;
-            }
-            
-            // For initial sequence
-            if (this.currentBead.startsWith('initial-')) {
-                if (this.currentBead === 'initial-our-father') return this.prayers.ourFather;
-                if (this.currentBead.startsWith('initial-ave-')) return this.prayers.hailMary;
-            }
-            
             return null;
         },
         showGloryBe() {
-            if (!this.currentBead) return false;
-            
-            // Show Glory Be on the 10th Ave Maria of each decade
-            if (this.currentBead.includes('decade-')) {
-                const parts = this.currentBead.split('-');
-                if (parts[2] === 'ave' && parseInt(parts[3]) === 10) {
-                    return true;
-                }
-            }
-            
-            // Show Glory Be after the 3rd Hail Mary in initial sequence
-            if (this.currentBead === 'initial-ave-3') {
-                return true;
-            }
-            
-            return false;
+            return this.currentBead === 'initialHailMary3' || 
+                   (this.currentBead && this.currentBead.startsWith('decade') && 
+                    this.currentBead.endsWith('10'));
         },
         showFatimaPrayer() {
-            if (!this.currentBead) return false;
-            
-            // Show Fatima Prayer only on the 10th Ave Maria of each decade
-            if (this.currentBead.includes('-ave-')) {
-                const parts = this.currentBead.split('-');
-                const aveNumber = parseInt(parts[parts.length - 1]);
-                return aveNumber === 10;
-            }
-            
-            return false;
+            return this.currentBead && 
+                   this.currentBead.startsWith('decade') && 
+                   this.currentBead.endsWith('10');
+        },
+        showSalveRegina() {
+            // Show only on the last bead of the entire mystery (5th decade, 10th bead)
+            return this.currentBead === 'decade-5-HailMary10';
         },
         currentMystery() {
             if (!this.currentMysterySet || !this.currentBead) return null;
@@ -229,14 +206,12 @@ const app = new Vue({
     methods: {
         selectMysterySet(set) {
             this.currentMysterySet = set;
-            // Switch to beads tab when mystery is selected
             if (window.innerWidth <= 768) {
                 this.activeTab = 'beads';
             }
         },
         selectBead(beadId) {
             this.currentBead = beadId;
-            // On mobile, switch to prayers tab after selecting a bead
             if (window.innerWidth <= 768) {
                 this.activeTab = 'prayers';
             }
@@ -253,14 +228,11 @@ const app = new Vue({
             const xDiff = this.touchStartX - event.touches[0].clientX;
             const yDiff = this.touchStartY - event.touches[0].clientY;
 
-            // Only handle horizontal swipes
             if (Math.abs(xDiff) > Math.abs(yDiff) && Math.abs(xDiff) > 10) {
-                event.preventDefault(); // Prevent scrolling when swiping
+                event.preventDefault(); 
                 if (xDiff > 0 && this.activeTab === 'beads') {
-                    // Swipe left - switch to prayers
                     this.activeTab = 'prayers';
                 } else if (xDiff < 0 && this.activeTab === 'prayers') {
-                    // Swipe right - switch to beads
                     this.activeTab = 'beads';
                 }
             }
@@ -280,34 +252,31 @@ const app = new Vue({
 
             let nextBeadId = null;
 
-            // Handle initial sequence
             if (this.currentBead === 'crucifix') {
-                nextBeadId = 'initial-our-father';
-            } else if (this.currentBead === 'initial-our-father') {
-                nextBeadId = 'initial-ave-1';
-            } else if (this.currentBead.startsWith('initial-ave-')) {
-                const currentAve = parseInt(this.currentBead.split('-')[2]);
+                nextBeadId = 'initialOurFather';
+            } else if (this.currentBead === 'initialOurFather') {
+                nextBeadId = 'initialHailMary1';
+            } else if (this.currentBead.startsWith('initialHailMary')) {
+                const currentAve = parseInt(this.currentBead.split('HailMary')[1]);
                 if (currentAve < 3) {
-                    nextBeadId = `initial-ave-${currentAve + 1}`;
+                    nextBeadId = `initialHailMary${currentAve + 1}`;
                 } else {
-                    nextBeadId = 'decade-1-our-father';
+                    nextBeadId = 'decade-1-OurFather';
                 }
-            }
-            // Handle decades
-            else if (this.currentBead.includes('decade-')) {
+            } else if (this.currentBead.includes('decade-')) {
                 const [_, decade, type, number] = this.currentBead.split('-');
                 const decadeNum = parseInt(decade);
                 
-                if (type === 'our-father') {
-                    nextBeadId = `decade-${decade}-ave-1`;
-                } else if (type === 'ave') {
+                if (type === 'OurFather') {
+                    nextBeadId = `decade-${decade}-HailMary1`;
+                } else if (type === 'HailMary') {
                     const aveNum = parseInt(number);
                     if (aveNum < 10) {
-                        nextBeadId = `decade-${decade}-ave-${aveNum + 1}`;
+                        nextBeadId = `decade-${decade}-HailMary${aveNum + 1}`;
                     } else if (decadeNum < 5) {
-                        nextBeadId = `decade-${decadeNum + 1}-our-father`;
+                        nextBeadId = `decade-${decadeNum + 1}-OurFather`;
                     } else {
-                        nextBeadId = 'crucifix'; // Complete the rosary
+                        nextBeadId = 'crucifix'; 
                     }
                 }
             }
@@ -323,32 +292,29 @@ const app = new Vue({
 
             let prevBeadId = null;
 
-            // Handle initial sequence
-            if (this.currentBead === 'initial-ave-1') {
-                prevBeadId = 'initial-our-father';
-            } else if (this.currentBead === 'initial-our-father') {
+            if (this.currentBead === 'initialHailMary1') {
+                prevBeadId = 'initialOurFather';
+            } else if (this.currentBead === 'initialOurFather') {
                 prevBeadId = 'crucifix';
-            } else if (this.currentBead.startsWith('initial-ave-')) {
-                const currentAve = parseInt(this.currentBead.split('-')[2]);
-                prevBeadId = `initial-ave-${currentAve - 1}`;
-            }
-            // Handle decades
-            else if (this.currentBead.includes('decade-')) {
+            } else if (this.currentBead.startsWith('initialHailMary')) {
+                const currentAve = parseInt(this.currentBead.split('HailMary')[1]);
+                prevBeadId = `initialHailMary${currentAve - 1}`;
+            } else if (this.currentBead.includes('decade-')) {
                 const [_, decade, type, number] = this.currentBead.split('-');
                 const decadeNum = parseInt(decade);
                 
-                if (type === 'our-father') {
+                if (type === 'OurFather') {
                     if (decadeNum === 1) {
-                        prevBeadId = 'initial-ave-3';
+                        prevBeadId = 'initialHailMary3';
                     } else {
-                        prevBeadId = `decade-${decadeNum - 1}-ave-10`;
+                        prevBeadId = `decade-${decadeNum - 1}-HailMary10`;
                     }
-                } else if (type === 'ave') {
+                } else if (type === 'HailMary') {
                     const aveNum = parseInt(number);
                     if (aveNum > 1) {
-                        prevBeadId = `decade-${decade}-ave-${aveNum - 1}`;
+                        prevBeadId = `decade-${decade}-HailMary${aveNum - 1}`;
                     } else {
-                        prevBeadId = `decade-${decade}-our-father`;
+                        prevBeadId = `decade-${decade}-OurFather`;
                     }
                 }
             }
@@ -359,22 +325,18 @@ const app = new Vue({
         }
     },
     mounted() {
-        // Check for dark mode preference
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
             this.isDarkMode = true;
         }
 
-        // Set up dark mode listener
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
             this.isDarkMode = e.matches;
         });
 
-        // Force beads tab on mobile
         if (window.innerWidth <= 768) {
             this.activeTab = 'beads';
         }
 
-        // Add keyboard navigation
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
                 this.nextBead();

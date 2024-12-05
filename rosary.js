@@ -229,6 +229,10 @@ const app = new Vue({
     methods: {
         selectMysterySet(set) {
             this.currentMysterySet = set;
+            // Switch to beads tab when mystery is selected
+            if (window.innerWidth <= 768) {
+                this.activeTab = 'beads';
+            }
         },
         selectBead(beadId) {
             this.currentBead = beadId;

@@ -249,12 +249,13 @@ const app = new Vue({
             const xDiff = this.touchStartX - event.touches[0].clientX;
             const yDiff = this.touchStartY - event.touches[0].clientY;
 
-            // Detect horizontal swipe
-            if (Math.abs(xDiff) > Math.abs(yDiff)) {
-                if (xDiff > 10) {
+            // Only handle horizontal swipes
+            if (Math.abs(xDiff) > Math.abs(yDiff) && Math.abs(xDiff) > 10) {
+                event.preventDefault(); // Prevent scrolling when swiping
+                if (xDiff > 0 && this.activeTab === 'beads') {
                     // Swipe left - switch to prayers
                     this.activeTab = 'prayers';
-                } else if (xDiff < -10) {
+                } else if (xDiff < 0 && this.activeTab === 'prayers') {
                     // Swipe right - switch to beads
                     this.activeTab = 'beads';
                 }
